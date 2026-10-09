@@ -13,20 +13,43 @@ public:
     //                 0 + f(ind+1, tranNo,prices,n,k,dp));
     // }
 
-    int maxProfit(int k, vector<int>& prices) {
+    // int maxProfit(int k, vector<int>& prices) {
+    //     int n = prices.size();
+    //     vector<vector<int>> dp(n+1,vector<int>(2*k+1, 0));
+
+    //     for(int ind = n-1; ind>=0; ind--){
+    //         for(int tranNo = 2*k-1; tranNo >= 0; tranNo--){
+    //             if(tranNo % 2 == 0){ //buy
+    //             dp[ind][tranNo] = max( -prices[ind] + dp[ind+1][tranNo+1], 
+    //                                                 0 + dp[ind+1][tranNo]);
+    //             }
+    //             else dp[ind][tranNo] = max( prices[ind] + dp[ind+1][tranNo+1],
+    //                                         0 + dp[ind+1][tranNo]);
+    //         }
+    //     }
+    //     return dp[0][0];
+    // }
+
+
+
+    //space optimization
+
+     int maxProfit(int k, vector<int>& prices) {
         int n = prices.size();
-        vector<vector<int>> dp(n+1,vector<int>(2*k+1, 0));
+        vector<int> after(2*k+1, 0);
+        vector<int> cur(2*k+1, 0);
 
         for(int ind = n-1; ind>=0; ind--){
             for(int tranNo = 2*k-1; tranNo >= 0; tranNo--){
                 if(tranNo % 2 == 0){ //buy
-                dp[ind][tranNo] = max( -prices[ind] + dp[ind+1][tranNo+1], 
-                                                    0 + dp[ind+1][tranNo]);
+                cur[tranNo] = max( -prices[ind] + after[tranNo+1], 
+                                                    0 + after[tranNo]);
                 }
-                else dp[ind][tranNo] = max( prices[ind] + dp[ind+1][tranNo+1],
-                                            0 + dp[ind+1][tranNo]);
+                else cur[tranNo] = max( prices[ind] + after[tranNo+1],
+                                            0 + after[tranNo]);
             }
+            after = cur;
         }
-        return dp[0][0];
+        return after[0];
     }
 };
