@@ -1,38 +1,24 @@
 class Solution {
 public:
+    int f(int ind,vector<int> &coins, int amount, vector<vector<int>> &dp){
+        if(ind == 0){
+            return (amount % coins[0] == 0);
+        }
+
+        if(dp[ind][amount] != -1) return dp[ind][amount];
+
+        int notTake = f(ind-1,coins,amount,dp);
+        int take = 0;
+        if(coins[ind] <= amount){
+            take = f(ind,coins,amount-coins[ind],dp);
+        }
+        return dp[ind][amount] =  take+notTake;
+    }
+
     int change(int amount, vector<int>& coins) {
-
         int n = coins.size();
+        vector<vector<int>> dp(n,vector<int>(amount+1,-1));
 
-        vector<vector<int>> dp(
-            n + 1,
-            vector<int>(amount + 1, 0)
-        );
-
-        for(int i = 0; i <= n; i++) {
-            dp[i][0] = 1;
-        }
-
-        for(int i = 1; i <= n; i++) {
-            for(int j = 1; j <= amount; j++) {
-
-                if(coins[i - 1] <= j) {
-
-                    long long total =
-                        (long long)dp[i][j - coins[i - 1]]
-                        + dp[i - 1][j];
-
-                    dp[i][j] =
-                        total > INT_MAX
-                        ? INT_MAX
-                        : (int)total;
-                }
-                else {
-                    dp[i][j] = dp[i - 1][j];
-                }
-            }
-        }
-
-        return dp[n][amount];
+        return f(n-1,coins,amount,dp);
     }
 };
